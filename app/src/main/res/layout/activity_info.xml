@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="6dp"
+    android:orientation="vertical"
+    tools:context="com.hmproductions.moneytracker.InfoActivity">
+
+    <TextView
+        android:text="Money Tracker is a swift and powerful android application which can record and save the extra's information with its respective cost and date of purchase in secured database.\n\nThis app is also capable of showing remaining balance/budget left. Initial balance is Rs.2000 which can be changed anytime through drop down menu. \n\nI had great time making this app and learning many things about RDBMS and implementing it in android. I have tried to handle all possible errors. If you find any bug please send a mail to harshmahajan20@yahoo.in\n~Cheers Harsh  "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_weight="10"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <Button
+        android:text="Change Color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/color_button"
+        android:background="@android:color/holo_green_light"
+        style="@style/Widget.AppCompat.Button.Borderless" />
+</LinearLayout>

@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Money Tracker</string>
+    <string name="add">Add</string>
+    <string name="balance_text">Available Balance</string>
+    <string name="item_name">Item Name</string>
+    <string name="french_fries">French Fries</string>
+    <string name="gobi_machurian">Gobi Manchurian</string>
+    <string name="mushroom_masala">Mushroom Masala</string>
+    <string name="paneer_fried_rice">Paneer Fried Rice</string>
+    <string name="kadai_paneer">Kadai Paneer</string>
+    <string name="lonely_text">It\'s a bit lonely here.....</string>
+    <string name="plus_text">Add extras by tapping on Plus Button.</string>
+    <string name="paneer_butter_masala">Paneer Butter Masala</string>
+    <string name="palak_paneer">Palak Paneer</string>
+    <string name="gobi_65">Gobi 65</string>
+    <string name="aloo_65">Aloo 65</string>
+    <string name="paneer_65">Paneer 65</string>
+    <string name="chicken_fried_rice">Chicken Fried Rice</string>
+    <string name="chicken_masala">Chicken Masala</string>
+    <string name="fish_fry">Fish Fry</string>
+    <string name="egg_curry">Egg Curry</string>
+    <string name="omelet">Omelet</string>
+    <string name="others">Others</string>
+    <string name="toggle_text">Use switch to toggle between\ndrop down menu and text field.</string>
+</resources>
