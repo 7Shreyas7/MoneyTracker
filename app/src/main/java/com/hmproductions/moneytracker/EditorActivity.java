@@ -29,7 +29,6 @@ import com.hmproductions.moneytracker.data.ExtrasContract.ExtrasEntry;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private EditText mItemName1, mItemCost;

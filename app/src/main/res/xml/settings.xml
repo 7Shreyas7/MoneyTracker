@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:title="Sort by Cost"
+        android:summaryOn="Ascending"
+        android:summaryOff="Descending"
+        android:key="cost_sort"
+        android:defaultValue="true"/>
+
+    <EditTextPreference
+        android:title="Balance"
+        android:key="balance"
+        android:inputType="number"
+        android:hint="Eg. 1000"
+        android:maxLines="1"
+        android:summary="#HMproductions"/>
+
+ </PreferenceScreen>

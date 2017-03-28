@@ -3,6 +3,7 @@
     <string name="add">Add</string>
     <string name="balance_text">Available Balance</string>
     <string name="item_name">Item Name</string>
+
     <string name="french_fries">French Fries</string>
     <string name="gobi_machurian">Gobi Manchurian</string>
     <string name="mushroom_masala">Mushroom Masala</string>
@@ -21,5 +22,10 @@
     <string name="egg_curry">Egg Curry</string>
     <string name="omelet">Omelet</string>
     <string name="others">Others</string>
+
     <string name="toggle_text">Use switch to toggle between\ndrop down menu and text field.</string>
+    <string name="change_initial_balance">Change initial balance</string>
+    <string name="erase_all_data">Erase all data</string>
+    <string name="about">About</string>
+    <string name="settings">Settings</string>
 </resources>

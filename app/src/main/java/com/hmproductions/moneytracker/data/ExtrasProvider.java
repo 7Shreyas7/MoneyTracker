@@ -7,6 +7,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.hmproductions.moneytracker.data.ExtrasContract.ExtrasEntry;
@@ -33,7 +34,7 @@ public class ExtrasProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor;
@@ -55,6 +56,8 @@ public class ExtrasProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Error while serving URI request");
         }
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
         return cursor;
     }
 

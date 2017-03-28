@@ -6,19 +6,21 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/change_balance"
-        android:title="Change initial balance"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/erase_all_data"
-        android:title="Erase all data"
-        app:showAsAction="never" />
+        android:title="@string/erase_all_data"
+        android:icon="@mipmap/ic_delete_forever"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/about"
-        android:title="About"
+        android:title="@string/about"
         app:showAsAction="ifRoom"
         android:icon="@mipmap/info_icon3"/>
+
+    <item
+        android:title="@string/settings"
+        android:id="@+id/settings"
+        android:icon="@mipmap/ic_settings_gear3"
+        app:showAsAction="always"/>
 
 </menu>

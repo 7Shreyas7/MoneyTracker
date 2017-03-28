@@ -9,19 +9,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.hmproductions.moneytracker.MainActivity"
-            android:screenOrientation="portrait"
-            android:label="Money Tracker">
+            android:name=".MainActivity"
+            android:label="Money Tracker"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name="com.hmproductions.moneytracker.EditorActivity"
+            android:name=".EditorActivity"
             android:label="EditorActivity"
-            android:parentActivityName="com.hmproductions.moneytracker.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.hmproductions.moneytracker.EditorActivity" />
@@ -31,20 +32,25 @@
         </activity>
 
         <provider
-            android:name="com.hmproductions.moneytracker.data.ExtrasProvider"
+            android:name=".data.ExtrasProvider"
             android:authorities="com.hmproductions.moneytracker"
             android:exported="false" />
 
         <activity
-            android:name="com.hmproductions.moneytracker.InfoActivity"
+            android:name=".InfoActivity"
             android:label="About Page"
-            android:parentActivityName="com.hmproductions.moneytracker.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.hmproductions.moneytracker.InfoActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>></activity>
+            </intent-filter>
+            >
+        </activity>
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

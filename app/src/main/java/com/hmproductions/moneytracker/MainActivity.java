@@ -15,6 +15,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.EditTextPreference;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,13 +28,35 @@ import android.widget.Toast;
 
 import com.hmproductions.moneytracker.data.ExtrasContract;
 import com.hmproductions.moneytracker.data.ExtrasProvider;
+import com.hmproductions.moneytracker.settings.SettingsActivity;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+/* Making a database App :-
+
+    1. Create Contract class containing content authorities
+    2. Create it's sub class Entry class for each table containing table and column names ( implement BaseColumns class )
+
+    3. Create DbHelper class extending SQLiteOpenHelper class containing CREATE & DELETE statements and DATABASE name
+
+    4a. Create Provider class extending from ContentProvider
+    4b. Create URI matcher and add URIs
+    5. Create DbHelper object
+    6. Override & define all functions
+    7. Add provider in manifest
+
+    8. In MainActivity implement LoaderManager.LoaderCallbacks<Cursor>
+    9. Kick off loader in onCreate()
+    10. Define all the three functions
+ */
+
+public class MainActivity
+        extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
 
     ListView listView;
     FloatingActionButton fab;
     ExtrasCursorAdapter adapter;
     public static int balance = 2000, total = 2000;
+    boolean costSortOrder;
     TextView balance_textView;
 
     @Override
@@ -52,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         ListItemClickListener();
         FloatingActionButtonListener();
-        total = getTotal();
+        SetupPreferences();
 
         balance = total - ExtrasProvider.getCostSum();
 
@@ -92,6 +115,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
 
+    public void SetupPreferences()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        preferences.registerOnSharedPreferenceChangeListener(this);
+
+        costSortOrder = preferences.getBoolean("cost_sort", true);
+        total = Integer.parseInt(preferences.getString("balance", "2000"));
+    }
+
     public void checkBalance()
     {
         if(balance<0)
@@ -123,15 +155,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         editor.apply();
     }
 
-    public int getTotal()
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences("balanceInfo", Context.MODE_PRIVATE);
-
-        return sharedPreferences.getInt("total",2000);
-    }
-
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle)
+    {
         String[] projection = {
                 ExtrasContract.ExtrasEntry._ID,
                 ExtrasContract.ExtrasEntry.COLUMN_EXTRAS_NAME,
@@ -139,16 +165,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 ExtrasContract.ExtrasEntry.COLUMN_EXTRAS_COST
         };
 
-        return new CursorLoader(this, ExtrasContract.ExtrasEntry.CONTENT_URI,projection,null,null,null);
+        String sortOrder = (costSortOrder?" ASC":" DESC");
+
+        return new CursorLoader(this, ExtrasContract.ExtrasEntry.CONTENT_URI,projection,null,null, ExtrasContract.ExtrasEntry.COLUMN_EXTRAS_COST + sortOrder);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor)
+    {
         adapter.swapCursor(cursor);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> loader)
+    {
         adapter.swapCursor(null);
     }
 
@@ -194,45 +224,36 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     public void onClick(DialogInterface dialogInterface, int i) {
                         int no_of_rows_deleted = getContentResolver().delete(ExtrasContract.ExtrasEntry.CONTENT_URI,null,null);
                         saveTotal(2000);
-                        Toast.makeText(MainActivity.this,"Please restart the Application", Toast.LENGTH_LONG).show();
                     }
                 }).show();
                 return true;
 
-            case R.id.change_balance:
-                builder = new AlertDialog.Builder(this);
-                final EditText input = new EditText(this);
-                input.setMaxLines(1);
-                input.setHint("Eg. 1000");
-                input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                builder.setTitle("New Balance")
-                        .setView(input)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        int checker =  Integer.parseInt(input.getText().toString());
-                        if(checker>0)
-                        {
-                            total = checker;
-                            balance = total - ExtrasProvider.getCostSum();
-                            balance_textView.setText("Balance Rs." + String.valueOf(balance));
-                            saveTotal(total);
-                            checkBalance();
-                        }
-                        else
-                            Toast.makeText(MainActivity.this,"Please enter a valid amount",Toast.LENGTH_SHORT).show();
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                builder.show();
+            case R.id.settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
-
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+    {
+        if(key.equals("balance"))
+        {
+            total = Integer.parseInt(sharedPreferences.getString("balance", "2000"));
+            balance = total - ExtrasProvider.getCostSum();
+            balance_textView.setText("Balance Rs." + String.valueOf(balance));
+            saveTotal(total);
+            checkBalance();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 }
