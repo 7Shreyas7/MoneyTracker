@@ -19,4 +19,14 @@
         <item>Omelet</item>
         <item>Others</item>
     </string-array>
+
+    <array name="sort_labels" >
+        <item>DATE</item>
+        <item>COST</item>
+    </array>
+
+    <array name="sort_values" >
+        <item>Date</item>
+        <item>Cost</item>
+    </array>
 </resources>

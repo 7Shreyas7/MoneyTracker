@@ -28,4 +28,10 @@
     <string name="erase_all_data">Erase all data</string>
     <string name="about">About</string>
     <string name="settings">Settings</string>
+    <string name="current_date">CURRENT DATE</string>
+    <string name="date">Date</string>
+    <string name="cost">Cost</string>
+    <string name="eg_25">Eg. 25</string>
+    <string name="eg_item_name">Eg. Item Name</string>
+    <string name="app_version_4_0">app-version 4.0</string>
 </resources>

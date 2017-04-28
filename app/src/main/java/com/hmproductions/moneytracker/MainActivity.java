@@ -56,7 +56,7 @@ public class MainActivity
     FloatingActionButton fab;
     ExtrasCursorAdapter adapter;
     public static int balance = 2000, total = 2000;
-    boolean costSortOrder;
+    String sortOrder;
     TextView balance_textView;
 
     @Override
@@ -120,7 +120,7 @@ public class MainActivity
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         preferences.registerOnSharedPreferenceChangeListener(this);
 
-        costSortOrder = preferences.getBoolean("cost_sort", true);
+        sortOrder = preferences.getString("sort_order", "Date");
         total = Integer.parseInt(preferences.getString("balance", "2000"));
     }
 
@@ -148,11 +148,14 @@ public class MainActivity
 
     public void saveTotal(int save)
     {
-        SharedPreferences sharedPreferences = getSharedPreferences("balanceInfo", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("total",save);
+        editor.putString("balance",String.valueOf(save));
         editor.apply();
+
+        balance = total - ExtrasProvider.getCostSum();
+        balance_textView.setText("Balance Rs." + String.valueOf(balance));
     }
 
     @Override
@@ -165,9 +168,9 @@ public class MainActivity
                 ExtrasContract.ExtrasEntry.COLUMN_EXTRAS_COST
         };
 
-        String sortOrder = (costSortOrder?" ASC":" DESC");
+        String stringSortOrder = (sortOrder.equals("Date")? ExtrasContract.ExtrasEntry.COLUMN_EXTRAS_DATE: ExtrasContract.ExtrasEntry.COLUMN_EXTRAS_COST);
 
-        return new CursorLoader(this, ExtrasContract.ExtrasEntry.CONTENT_URI,projection,null,null, ExtrasContract.ExtrasEntry.COLUMN_EXTRAS_COST + sortOrder);
+        return new CursorLoader(this, ExtrasContract.ExtrasEntry.CONTENT_URI,projection,null,null, stringSortOrder );
     }
 
     @Override
@@ -242,8 +245,6 @@ public class MainActivity
         if(key.equals("balance"))
         {
             total = Integer.parseInt(sharedPreferences.getString("balance", "2000"));
-            balance = total - ExtrasProvider.getCostSum();
-            balance_textView.setText("Balance Rs." + String.valueOf(balance));
             saveTotal(total);
             checkBalance();
         }

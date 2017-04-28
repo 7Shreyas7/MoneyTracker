@@ -1,5 +1,6 @@
 package com.hmproductions.moneytracker;
 
+import android.app.DatePickerDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 import com.hmproductions.moneytracker.data.ExtrasContract.ExtrasEntry;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -37,8 +40,30 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private Spinner mSpinner;
     private int mItemName2, no_rows_updated;
     private int mItemNameSelector = 0;
+    private int mDayOfMonth, mMonth, mYear;
 
     Uri uri, mCurrentUri;
+    private static Long timeInMillis = System.currentTimeMillis();
+
+    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener()
+    {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
+        {
+            String monthString, dayOfMonthString;
+
+            // Getting time in Millis for given day,month, year
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year,month,dayOfMonth);
+            timeInMillis = calendar.getTimeInMillis();
+
+            // Adding 0 if day or month is a single digit
+            monthString = checkIfSingleDigit(month + 1);
+            dayOfMonthString = checkIfSingleDigit(dayOfMonth);
+
+            dateButton.setText(dayOfMonthString + "/" + monthString + "/" + String.valueOf(year));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +86,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
         setupItemNameSpinner();
         setupSwitch();
+        setupDateSelector();
     }
 
     public void setupSwitch()
@@ -153,6 +179,55 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         });
     }
 
+    public void setupDateSelector()
+    {
+        dateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(dateButton.getText().toString().equals("CURRENT DATE"))
+                {
+                    Date date = new Date(System.currentTimeMillis());
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    mYear = calendar.get(Calendar.YEAR);
+                    mMonth = calendar.get(Calendar.MONTH);
+                    mDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                }
+                else
+                {
+                    String dateString = dateButton.getText().toString();
+                    mDayOfMonth = Integer.parseInt(dateString.substring(0,2));
+                    mMonth = Integer.parseInt(dateString.substring(3,5)) - 1;
+                    mYear = Integer.parseInt(dateString.substring(6,10));
+
+                    /*
+                        Date - 20/09/1998
+                        Index- 0123456789
+                     */
+                }
+                DatePickerDialog datePicker = new DatePickerDialog(EditorActivity.this, dateSetListener, mYear, mMonth, mDayOfMonth);
+                datePicker.show();
+            }
+        });
+    }
+
+    // Returns 03 if input is 3 or returns 12 if input is 12
+    private String checkIfSingleDigit(int original)
+    {
+        int count=0, check = original;
+        while(check != 0)
+        {
+            check/=10;
+            count++;
+        }
+
+        if(count == 1)
+            return "0" + String.valueOf(original);
+
+        else
+            return String.valueOf(original);
+    }
+
     public boolean insertData()
     {
         ContentValues contentValues = new ContentValues();
@@ -161,7 +236,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             contentValues.put(ExtrasEntry.COLUMN_EXTRAS_NAME,String.valueOf(mItemName2));
         else
             contentValues.put(ExtrasEntry.COLUMN_EXTRAS_NAME, mItemName1.getText().toString().trim());
-        contentValues.put(ExtrasEntry.COLUMN_EXTRAS_DATE,String.valueOf(System.currentTimeMillis()));
+
+        if(dateButton.getText().toString().equals("CURRENT DATE"))
+            contentValues.put(ExtrasEntry.COLUMN_EXTRAS_DATE,String.valueOf(System.currentTimeMillis()));
+        else
+            contentValues.put(ExtrasEntry.COLUMN_EXTRAS_DATE,String.valueOf(timeInMillis));
+
         contentValues.put(ExtrasEntry.COLUMN_EXTRAS_COST,mItemCost.getText().toString().trim());
 
         if(TextUtils.isEmpty(mItemName1.getText().toString()) && mItemNameSelector==1)
